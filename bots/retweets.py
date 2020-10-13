@@ -6,6 +6,8 @@ import logging
 from config import create_api
 import json
 import time
+# the regular imports, as well as this:
+from urllib3.exceptions import ProtocolError
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
@@ -49,7 +51,11 @@ def main(keywords):
     api = create_api()
     tweets_listener = RetweetListener(api)
     stream = tweepy.Stream(api.auth, tweets_listener)
-    stream.filter(track=keywords, languages=["en"])
+    while True:
+        try:
+            stream.filter(track=keywords, languages=["en"], is_async=True)
+        except ProtocolError:
+            continue
 
 
 if __name__ == "__main__":
