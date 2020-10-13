@@ -9,6 +9,7 @@ import time
 # the regular imports, as well as this:
 from urllib3.exceptions import ProtocolError
 from datetime import datetime
+from tweepy.error import TweepError
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
@@ -60,7 +61,7 @@ def main(keywords):
     while True:
         try:
             stream.filter(track=keywords, languages=["en"], is_async=True)
-        except ProtocolError:
+        except (ProtocolError, TweepError):
             continue
 
 
