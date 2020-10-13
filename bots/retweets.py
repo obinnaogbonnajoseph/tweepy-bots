@@ -8,6 +8,7 @@ import json
 import time
 # the regular imports, as well as this:
 from urllib3.exceptions import ProtocolError
+from datetime import datetime
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
@@ -26,17 +27,20 @@ class RetweetListener(tweepy.StreamListener):
                 tweet.user.id == self.me.id:
             # This tweet is a reply or I'm its author so, ignore it
             return
-        if not tweet.retweeted:
+
+        if not tweet.retweeted and not tweet.is_quote_status:
             # Retweet, since we have not retweeted it yet
             try:
                 currentTime = time.time()
                 timeResult = currentTime - self.timeOfRetweet
-                if (timeResult > 900):
+                if (timeResult > 300):
                     tweet.retweet()
                     self.timeOfRetweet = time.time()
                     self.numberOfTweets = self.numberOfTweets + 1
                     logger.info(
                         f"***** number of retweets **** {self.numberOfTweets}")
+                    logger.info(
+                        f"***** current time of retweet {datetime.now()}")
                 else:
                     return
 
@@ -45,6 +49,8 @@ class RetweetListener(tweepy.StreamListener):
 
     def on_error(self, status):
         logger.error(status)
+        if status == 327:
+            self.timeOfRetweet = 0
 
 
 def main(keywords):
