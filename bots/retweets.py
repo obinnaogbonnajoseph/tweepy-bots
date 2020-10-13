@@ -35,6 +35,9 @@ class RetweetListener(tweepy.StreamListener):
                     self.numberOfTweets = self.numberOfTweets + 1
                     logger.info(
                         f"***** number of retweets **** {self.numberOfTweets}")
+                else:
+                    return
+
             except:
                 logger.error("Error on retweet", exc_info=True)
 
