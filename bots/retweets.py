@@ -25,21 +25,20 @@ class RetweetListener(tweepy.StreamListener):
             # This tweet is a reply or I'm its author so, ignore it
             return
         if not tweet.retweeted:
-            # Retweet, since we have not retweeted it yet
-            try:
-                currentTime = time.time()
-                timeResult = currentTime - self.timeOfRetweet
-                if (timeResult > 900):
+            currentTime = time.time()
+            timeResult = currentTime - self.timeOfRetweet
+            if (timeResult > 900):
+                # Retweet, since we have not retweeted it yet
+                try:
                     tweet.retweet()
                     self.timeOfRetweet = time.time()
                     self.numberOfTweets = self.numberOfTweets + 1
                     logger.info(
                         f"***** number of retweets **** {self.numberOfTweets}")
-                else:
-                    return
-
-            except:
-                logger.error("Error on retweet", exc_info=True)
+                except:
+                    logger.error("Error on retweet", exc_info=True)
+            else:
+                return
 
     def on_error(self, status):
         logger.error(status)
