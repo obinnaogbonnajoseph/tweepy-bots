@@ -12,25 +12,31 @@ logger = logging.getLogger()
 
 
 class RetweetListener(tweepy.StreamListener):
+
     def __init__(self, api):
         self.api = api
         self.me = api.me()
+        self.timeOfRetweet = 0
+        self.numberOfTweets = 0
 
     def on_status(self, tweet):
-        while True:
-            logger.info(f"***** Processing tweet id ******* {tweet.id}")
-            if tweet.in_reply_to_status_id is not None or \
-                    tweet.user.id == self.me.id:
-                # This tweet is a reply or I'm its author so, ignore it
-                return
-            if not tweet.retweeted:
-                # Retweet, since we have not retweeted it yet
-                try:
+        if tweet.in_reply_to_status_id is not None or \
+                tweet.user.id == self.me.id:
+            # This tweet is a reply or I'm its author so, ignore it
+            return
+        if not tweet.retweeted:
+            # Retweet, since we have not retweeted it yet
+            try:
+                currentTime = time.time()
+                timeResult = currentTime - self.timeOfRetweet
+                if (timeResult > 900):
                     tweet.retweet()
-                except:
-                    logger.error(
-                        "********Error on retweet *********", exc_info=True)
-            time.sleep(1800)
+                    self.timeOfRetweet = time.time()
+                    self.numberOfTweets = self.numberOfTweets + 1
+                    logger.info(
+                        f"***** number of retweets **** {self.numberOfTweets}")
+            except:
+                logger.error("Error on retweet", exc_info=True)
 
     def on_error(self, status):
         logger.error(status)
@@ -44,4 +50,4 @@ def main(keywords):
 
 
 if __name__ == "__main__":
-    main(["#SARSMUSTEND", "#ENDSARSNOW, -kill, -destroy, -loot, -boobs, -pussy, -sex"])
+    main(["#SARSMUSTEND", "#ENDSARSNOW, filter:safe, since:2020-10-12"])
