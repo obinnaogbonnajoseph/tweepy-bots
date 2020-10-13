@@ -38,7 +38,7 @@ class RetweetListener(tweepy.StreamListener):
                 else:
                     return
 
-            except:
+            except Exception as e:
                 logger.error("Error on retweet", exc_info=True)
 
     def on_error(self, status):
