@@ -1,1 +1,1 @@
-web: python3 bots.retweets
+web: python3 bots/retweets.py
