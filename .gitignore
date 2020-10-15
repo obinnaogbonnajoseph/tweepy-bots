@@ -3,6 +3,9 @@
 .AppleDouble
 .LSOverride
 
+# environment files
+*.env
+
 # virtualenv
 .venv
 venv/
