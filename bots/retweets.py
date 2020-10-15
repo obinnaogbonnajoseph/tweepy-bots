@@ -67,4 +67,4 @@ def main(keywords):
 
 if __name__ == "__main__":
     main(["#SARSMUSTEND, filter:safe, since:2020-10-12",
-          "#ENDSWAT, filter:safe, since:2020-10-12"])
+          "#ENDSWAT, filter:safe, since:2020-10-12", "#ENDSARS, filter:safe, since:2020-10-12"])
